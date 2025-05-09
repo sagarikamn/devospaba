@@ -3,34 +3,22 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: circleci/python:3.9  # Using a Python Docker image for the environment
+      - image: cimg/python:3.9  # Updated to use the latest cimg/ Python image
     steps:
-      - checkout  # Checkout the code from GitHub
+      - checkout
       - run:
           name: Install dependencies
           command: |
-            python -m venv venv  # Create a virtual environment
-            . venv/bin/activate  # Activate the environment
-            pip install -r requirements.txt  # Install dependencies from requirements.txt
+            python -m venv venv
+            . venv/bin/activate
+            pip install -r requirements.txt
       - run:
           name: Run Tests
           command: |
-            . venv/bin/activate  # Activate the virtual environment
-            pytest  # Run tests using pytest
+            . venv/bin/activate
+            pytest
 
 workflows:
-  version: 2
   build:
     jobs:
-      - build  # Define which job to run in the workflow
- - run:
-    name: SonarCloud analysis
-    command: |
-      curl -sSLo sonar-scanner.zip https://github.com/SonarSource/sonar-scanner-cli/releases/download/4.6.2.2472/sonar-scanner-cli-4.6.2.2472-linux.zip
-      unzip sonar-scanner.zip
-      export PATH=$PWD/sonar-scanner-4.6.2.2472-linux/bin:$PATH
-      sonar-scanner -Dsonar.projectKey=<your-sonarcloud-project-key> \
-                    -Dsonar.organization=<your-sonarcloud-organization> \
-                    -Dsonar.host.url=https://sonarcloud.io \
-                    -Dsonar.login=$SONAR_TOKEN
-
+      - build
